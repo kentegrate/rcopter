@@ -1,6 +1,13 @@
 #include <ros/ros.h>
 #include <rcopter_msgs/Imu.h>
-#include <rcopter_drivers/mpu9250.hpp>
+
+#ifdef HAS_BCM2835
+  #include <rcopter_drivers/mpu9250.hpp>
+  MPU9250 mpu;
+#else
+  #include <rcopter_drivers/mock_mpu9250.hpp>
+  MockMPU9250 mpu;  
+#endif
 
 rcopter_msgs::Imu createImuMsg(float* accel, float* gyro, float* mag){
   rcopter_msgs::Imu msg;
@@ -22,8 +29,7 @@ rcopter_msgs::Imu createImuMsg(float* accel, float* gyro, float* mag){
 int main(int argc, char* argv[]){
   ros::init(argc, argv, "mpu9250_node");
   ros::NodeHandle nh;
-  MPU9250 mpu;
-  mpu.initialize();
+  mpu.initialize(1, 0x01);
   float accel[3];
   float gyro[3];
   float mag[3];

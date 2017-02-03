@@ -13,23 +13,6 @@ https://github.com/emlid/Navio/blob/master/C%2B%2B/Navio/MPU9250.cpp*/
 #define MPU9250_PIN BCM2835_SPI_CS1
 //-----------------------------------------------------------------------------------------------
 
-MPU9250::MPU9250()
-{
-  if (!bcm2835_init())
-    {
-      printf("bcm2835_init failed. Are you running as root??\n");
-    }
-  if (!bcm2835_spi_begin())
-    {
-      printf("bcm2835_spi_begin failedg. Are you running as root??\n");
-    }
-  bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);      // The default
-  bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);                   // The default
-  bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_16); // The default
-  bcm2835_spi_setChipSelectPolarity(MPU9250_PIN, LOW);      // the default
-  bcm2835_spi_chipSelect(MPU9250_PIN);                      // The default    
-}
-
 /*-----------------------------------------------------------------------------------------------
                                     REGISTER READ & WRITE
 usage: use these methods to read and write MPU9250 registers over SPI
@@ -112,6 +95,21 @@ returns 1 if an error occurred
 
 bool MPU9250::initialize(int sample_rate_div, int low_pass_filter)
 {
+  if (!bcm2835_init())
+    {
+      printf("bcm2835_init failed. Are you running as root??\n");
+    }
+  if (!bcm2835_spi_begin())
+    {
+      printf("bcm2835_spi_begin failedg. Are you running as root??\n");
+    }
+  bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);      // The default
+  bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);                   // The default
+  bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_16); // The default
+  bcm2835_spi_setChipSelectPolarity(MPU9250_PIN, LOW);      // the default
+  bcm2835_spi_chipSelect(MPU9250_PIN);                      // The default    
+
+
   uint8_t i = 0;
   char MPU_Init_Data[MPU_InitRegNum][2] = {
     //{0x80, MPUREG_PWR_MGMT_1},     // Reset Device - Disabled because it seems to corrupt initialisation of AK8963
